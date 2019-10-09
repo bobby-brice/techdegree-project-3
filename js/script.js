@@ -213,7 +213,7 @@
 
 //submit listener to prevent default if the entire form is not valid
     $('form').on('submit', function (e) {
-        e.preventDefault();
+        
         if (validateForm) {
             return true;
         } else {
