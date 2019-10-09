@@ -142,11 +142,11 @@
 //FORM VALIDATION AND VALIDATION MESSAGES
 
 // REGEX CONSTANTS
-    const emailValid = /^[^@]+@[^@.]+\.[a-z]+$/i;
+    const emailValid = /[^@]+@[^\.]+\..+/g;
     const creditCardValid = /^(?:[0-9]{13,16})?$/;
     const zipValid = /^\d{5}$/;
     const cvvValid = /^\d{3}$/;
-    const nameValid = /^[a - zA - Z] + (([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g;
+    const nameValid = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g;
     
 //NAME VALIDATION
     const nameInput = $('#name');
@@ -171,11 +171,41 @@
         validateName();
     });
 
+    const emailInput = $('#mail');
+    const errorMail = $("<span></span>").text("Please enter a valid email").css("color", "red");
+    emailInput.after(errorMail);
+    errorMail.hide();
+
+    emailInput.on('focusout', function () {
+
+        function validateEmail() {
+
+            if (emailInput.val() === '') {
+
+                errorMail.show();
+                $('#mail').focusout();
+                return false;
+            }
+
+            if (!emailValid.test(emailInput.val())) {
+
+            errorMail.show();
+            $('#mail').focusout();
+            return false;
+
+            } else {
+                errorMail.hide();
+                return true;
+            }
+        }
+        validateEmail();
+    });
     
+
 
     //conditional function to validate the entire form
     function validateForm () {
-        if ( validateName() ) { //add each validation function to an && condition to test if true
+        if ( validateName() && validateEmail() ) { //add each validation function to an && condition to test if true
             return true;
         } else {
             return false;
@@ -184,6 +214,7 @@
 
     //submit listener to prevent default if the entire form is not valid
     $('form').on('submit', function (e) {
+        e.preventDefault();
         if (validateForm) {
             return true;
         } else {
