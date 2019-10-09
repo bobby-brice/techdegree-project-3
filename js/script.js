@@ -5,8 +5,6 @@
     $('.activities').append(totalCostContainer);
     let totalActivityCost = 0;
         
-
-
     //apply focus to the name field on page load
     $('#name').focus();
 
