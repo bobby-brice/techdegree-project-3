@@ -154,57 +154,56 @@
     nameInput.after(errorSpan);
     errorSpan.hide();
 
-    nameInput.on('focusout', function () {
-        
-        function validateName() {
+    function validateName() {
 
-            if (nameInput.val() === '' || nameValid.test(nameInput.val())) {
-                
-                errorSpan.show();
-                $('#name').focusout();
-                return false;
-            } else {
-                errorSpan.hide();
-                return true;
-            }
+        if (nameInput.val() === '' || nameValid.test(nameInput.val())) {
+            errorSpan.show();
+            $('#name').focusout();
+            return false;
+        } else {
+            errorSpan.hide();
+            return true;
         }
+    }
+
+    nameInput.on('focusout', function () {
         validateName();
     });
 
+//EMAIL VALIDATION
     const emailInput = $('#mail');
     const errorMail = $("<span></span>").text("Please enter a valid email").css("color", "red");
     emailInput.after(errorMail);
     errorMail.hide();
 
-    emailInput.on('focusout', function () {
+    function validateEmail() {
 
-        function validateEmail() {
+        if (emailInput.val() === '') {
 
-            if (emailInput.val() === '') {
+            errorMail.show();
+            $('#mail').focusout();
+            return false;
+        }
 
-                errorMail.show();
-                $('#mail').focusout();
-                return false;
-            }
-
-            if (!emailValid.test(emailInput.val())) {
+        if (!emailValid.test(emailInput.val())) {
 
             errorMail.show();
             $('#mail').focusout();
             return false;
 
-            } else {
-                errorMail.hide();
-                return true;
-            }
+        } else {
+            errorMail.hide();
+            return true;
         }
+    }
+    
+    emailInput.on('focusout', function () {
         validateEmail();
     });
     
 
-
-    //conditional function to validate the entire form
-    function validateForm () {
+//conditional function to validate the entire form
+    const validateForm = () => {
         if ( validateName() && validateEmail() ) { //add each validation function to an && condition to test if true
             return true;
         } else {
@@ -212,7 +211,7 @@
         }
     }
 
-    //submit listener to prevent default if the entire form is not valid
+//submit listener to prevent default if the entire form is not valid
     $('form').on('submit', function (e) {
         e.preventDefault();
         if (validateForm) {
