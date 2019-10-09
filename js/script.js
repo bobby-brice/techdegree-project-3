@@ -146,25 +146,33 @@
     const creditCardValid = /^(?:[0-9]{13,16})?$/;
     const zipValid = /^\d{5}$/;
     const cvvValid = /^\d{3}$/;
+    const nameValid = /^[a - zA - Z] + (([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g;
     
-//name validation
-//name cannot be blank so conditional === cannot be an empty string - if it is, display error message
+//NAME VALIDATION
     const nameInput = $('#name');
     const errorSpan = $("<span></span>").text("Please enter your name").css("color", "red");
     nameInput.after(errorSpan);
     errorSpan.hide();
 
-    function validateName(name) {
+    nameInput.on('focusout', function () {
         
-        if (name.val() !== '') {
-            console.log(name);
-            errorSpan.hide();
-            return true;
-        } else {
-            errorSpan.show();
-            return false;
+        function validateName() {
+
+            if (nameInput.val() === '' || nameValid.test(nameInput.val())) {
+                
+                errorSpan.show();
+                $('#name').focusout();
+                return false;
+            } else {
+                errorSpan.hide();
+                return true;
+            }
         }
-    }
+        validateName();
+    });
+
+    
+
     //conditional function to validate the entire form
     function validateForm () {
         if ( validateName() ) { //add each validation function to an && condition to test if true
