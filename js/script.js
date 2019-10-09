@@ -142,83 +142,74 @@
 //FORM VALIDATION AND VALIDATION MESSAGES
 
 // REGEX CONSTANTS
-    const emailValid = /[^@]+@[^\.]+\..+/g;
+    
     const creditCardValid = /^(?:[0-9]{13,16})?$/;
     const zipValid = /^\d{5}$/;
     const cvvValid = /^\d{3}$/;
-    const nameValid = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g;
+
     
 //NAME VALIDATION
-    const nameInput = $('#name');
-    const errorSpan = $("<span></span>").text("Please enter your name").css("color", "red");
-    nameInput.after(errorSpan);
-    errorSpan.hide();
-
+    
     function validateName() {
+        const nameInput = $('#name');
+        const nameValid = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g;
 
-        if (nameInput.val() === '' || nameValid.test(nameInput.val())) {
-            errorSpan.show();
-            $('#name').focusout();
+        if (!(nameValid.test($("#name").val()))) {
+            
+            nameInput.css('border-color', 'red');
+            $('[for="name"] span').remove(); //
+            $('[for="name"]').append('<span> Please enter a valid name.</span>').css('color', 'red');
             return false;
         } else {
-            errorSpan.hide();
+            nameInput.css('border-color', '#6F9DDC'); //sets input border color back
+            $('[for="name"] span').remove(); 
+            $('[for="name"]').css('color', '#000');
             return true;
         }
     }
 
+//EVENT LISTENER TO SHOW NAME ERROR
     nameInput.on('focusout', function () {
         validateName();
     });
 
 //EMAIL VALIDATION
-    const emailInput = $('#mail');
-    const errorMail = $("<span></span>").text("Please enter a valid email").css("color", "red");
-    emailInput.after(errorMail);
-    errorMail.hide();
-
     function validateEmail() {
+        const validEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-        if (emailInput.val() === '') {
-
-            errorMail.show();
-            $('#mail').focusout();
+        if (!(validEmail.test($("#mail").val()))) {
+            $('#mail').css('border-color', 'red');
+            $('[for="mail"] span').remove();
+            $('[for="mail"]').append('<span> Please enter a valid email.</span>').css('color', 'red');
             return false;
-        }
-
-        if (!emailValid.test(emailInput.val())) {
-
-            errorMail.show();
-            $('#mail').focusout();
-            return false;
-
         } else {
-            errorMail.hide();
+            $('#mail').css('border-color', '#6F9DDC');
+            $('[for="mail"] span').remove();
+            $('[for="mail"]').css('color', '#000');
             return true;
         }
     }
-    
-    emailInput.on('focusout', function () {
+
+//EVENT LISTENER TO SHOW EMAIL ERROR
+    $('#mail').on('focusout', function () {
         validateEmail();
     });
     
 
-//conditional function to validate the entire form
-    const validateForm = () => {
-        if ( validateName() && validateEmail() ) { //add each validation function to an && condition to test if true
-            return true;
-        } else {
-            return false;
-        }
-    }
+//CONDITIONAL FUNCTION TO VALIDATE FORM SUBMIT
+    const validateForm = $('form');
 
-//submit listener to prevent default if the entire form is not valid
-    $('form').on('submit', function (e) {
+    validateForm.on('submit', function(e){
+
+        if (validateName() === false) { //add each validation function to an && condition to test if true
+            e.preventDefault();
+        } 
         
-        if (validateForm) {
-            return true;
-        } else {
+        if (validateEmail() === false) {
             e.preventDefault();
         }
-    });    
+
+
+    });   
 
 }) //end of document ready

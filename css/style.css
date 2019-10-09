@@ -181,6 +181,10 @@ option {
 	display: none;
 }
 
+span {
+	color: #6F9DDC;
+}
+
 .clearfix::after {
   content: " ";
   display: table;
