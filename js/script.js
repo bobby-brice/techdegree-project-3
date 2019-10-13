@@ -91,11 +91,10 @@
         //DISABLE CONFLICTING ACTIVITIES
         const activityChecked = clicked.attr('data-day-and-time');
 
-        $('.activities input').each(function (i, input) {
+        $('.activities input').each(function (i, input) { //iterate over each activity checkbox
             const currentCheckbox = $(this);
             
-            if ( activityChecked === currentCheckbox.attr('data-day-and-time') && clicked.attr('name') !== currentCheckbox.attr('name')) {
-
+            if ( activityChecked === currentCheckbox.attr('data-day-and-time') && clicked.attr('name') !== currentCheckbox.attr('name')) { //if the activity selected is equal to the date/time of another activity AND the name isn't the same - disable that activity
                 if ($(clicked).is(':checked')) {
                     $(input).prop("disabled", true);   
                 } else {
@@ -139,16 +138,8 @@
 
     });
 
-//FORM VALIDATION AND VALIDATION MESSAGES
-
-// REGEX CONSTANTS
-    
-    const creditCardValid = /^(?:[0-9]{13,16})?$/;
-    const zipValid = /^\d{5}$/;
-    const cvvValid = /^\d{3}$/;
-
-    
-//NAME VALIDATION
+//FORM VALIDATION AND VALIDATION MESSAGES 
+    //NAME VALIDATION
     
     function validateName() {
         const nameInput = $('#name');
@@ -161,19 +152,19 @@
             $('[for="name"]').append('<span> Please enter a valid name.</span>').css('color', 'red');
             return false;
         } else {
-            nameInput.css('border-color', '#6F9DDC'); //sets input border color back
+            nameInput.css('border-color', '#6F9DDC'); //resets input border color, removes the span
             $('[for="name"] span').remove(); 
             $('[for="name"]').css('color', '#000');
             return true;
         }
     }
 
-//EVENT LISTENER TO SHOW NAME ERROR
-    nameInput.on('focusout', function () {
+    //EVENT LISTENER TO SHOW NAME ERROR
+    $('#name').on('focusout', function () {
         validateName();
     });
 
-//EMAIL VALIDATION
+    //EMAIL VALIDATION
     function validateEmail() {
         const validEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
@@ -190,18 +181,121 @@
         }
     }
 
-//EVENT LISTENER TO SHOW EMAIL ERROR
+    //EVENT LISTENER TO SHOW EMAIL ERROR
     $('#mail').on('focusout', function () {
         validateEmail();
     });
+
+
+    //ACTIVITIES VALIDATION - at least one activity must be checked
+    function validateActivities () {
+        if($('input[type="checkbox"]').is(':checked')) {
+            $('.activities legend span').remove();
+            return true;
+        } else {
+            $('.activities legend span').remove();
+            $('.activities legend').append('<span>: Please select an activity.</span>').css('color', 'red');
+        return false;
+        }
+
+    }
     
 
-//CONDITIONAL FUNCTION TO VALIDATE FORM SUBMIT
+    //EVENT LISTENER TO SHOW activities ERROR
+    $('.activities').on('click', function () {
+        validateActivities();
+    });
+    
+
+    // CREDIT CARD # VALIDATION
+    function validateCardNum () {
+        const creditCardValid = /^(?:[0-9]{13,16})?$/;
+
+        if ($('#cc-num').val().length < 13) {
+            $('#cc-num').css('border-color', 'red');
+            $('[for="cc-num"] span').remove();
+            $('[for="cc-num"]').append('<span> Credit card number must be at least 13 digits long.</span>').css('color', 'red');
+            return false;
+        } else if ($('#cc-num').val().length > 16) {
+            $('#cc-num').css('border-color', 'red');
+            $('[for="cc-num"] span').remove();
+            $('[for="cc-num"]').append('<span> Credit card number must not exceed 16 digits.</span>').css('color', 'red');
+            return false;
+        }
+        else {
+            if (creditCardValid.test($('#cc-num').val())) { //if the test value is true else = throw error
+            $('#cc-num').css('border-color', '#6F9DDC');
+            $('[for="cc-num"] span').remove();
+            $('[for="cc-num"]').css('color', '#000');
+            return true;
+        } else {
+            $('#cc-num').css('border-color', 'red');
+            $('[for="cc-num"] span').remove();
+            $('[for="cc-num"]').append('<span> Credit card number must be between 13 - 16 digits.</span>').css('color', 'red');
+           return false;
+            }
+        }
+    }
+
+    //EVENT LISTENER TO SHOW Credit Card ERROR
+    $('#cc-num').on('focusout', function () {
+        validateCardNum();
+    });
+
+
+    // Zip Code Validation
+    function validateZip() {
+        const zipValid = /^[0][1-9]\d{4}$|^[1-9]\d{4}$/;
+
+        if (!(zipValid.test($('#zip').val()))) { //if the zip testing the value of the input is false
+            $('#zip').css('border-color', 'red');
+            $('[for="zip"] span').remove();
+            $('[for="zip"]').append('<span> Please enter a valid zip code.</span>').css('color', 'red');
+            return false;
+        } else {
+            $('#zip').css('border-color', '#6F9DDC');
+            $('[for="zip"] span').remove();
+            $('[for="zip"]').css('color', '#000');
+            return true;
+        }
+    }
+
+    //EVENT LISTENER TO SHOW ZIP ERROR
+    $('#zip').on('focusout', function () {
+        validateZip();
+    });
+
+
+    //CVV Validation
+    function validateCvv() {
+        const cvvValid = /^[0][1-9]\d{2}$|^[1-9]\d{2}$/;
+
+        if (!(cvvValid.test($('#cvv').val()))) { //if the cvv testing the value of the input is false
+            $('#cvv').css('border-color', 'red');
+            $('[for="cvv"] span').remove();
+            $('[for="cvv"]').append('<span> Please enter a valid CVV.</span>').css('color', 'red');
+            return false;
+        } else {
+            $('#zip').css('border-color', '#6F9DDC');
+            $('[for="cvv"] span').remove();
+            $('[for="cvv"]').css('color', '#000');
+            return true;
+        }
+    }
+
+    //EVENT LISTENER TO SHOW CVV ERROR
+    $('#cvv').on('focusout', function () {
+        validateCvv();
+    })
+
+//END FORM VALIDATION AND MESSAGES
+
+    //CONDITIONAL FUNCTION TO VALIDATE FORM SUBMIT
     const validateForm = $('form');
 
     validateForm.on('submit', function(e){
 
-        if (validateName() === false) { //add each validation function to an && condition to test if true
+        if (validateName() === false) { //add each validation function to test if true or prevent default
             e.preventDefault();
         } 
         
@@ -209,6 +303,21 @@
             e.preventDefault();
         }
 
+        if (validateActivities() === false) {
+            e.preventDefault();
+        }
+
+        if ($('[value="Credit Card"]').is(':selected')) { //if CC is selected an any of the 3 conditions is false, prevent default and throw error
+            if (validateCardNum() === false) {
+                e.preventDefault();
+            }
+            if (validateZip() === false) {
+                e.preventDefault();
+            }
+            if (validateCvv() === false) {
+                e.preventDefault();
+            }
+        }
 
     });   
 
